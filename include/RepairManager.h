@@ -35,4 +35,15 @@ public:
     int getRecordCount() const;
 };
 
+void editFuel();
+void deleteFuel();
+
+void searchByDate(const string& date) const;
+
+void sortByMileage();
+void sortByCost();
+
+FuelRecord getMostExpensiveFuel() const;
+FuelRecord getCheapestFuel() const;
+
 #endif
