@@ -1,6 +1,8 @@
+```cpp
 #include "../include/ReportManager.h"
 
 #include <iostream>
+#include <fstream>
 #include <iomanip>
 #include <map>
 
@@ -20,10 +22,16 @@ void ReportManager::showFullReport(
     double total =
         fuelCost + repairCost;
 
+    vector<FuelRecord> fuels =
+        fuelManager.getRecords();
+
+    vector<RepairRecord> repairs =
+        repairManager.getRecords();
+
     cout << fixed << setprecision(2);
 
     cout << "\n====================================\n";
-    cout << "          EXPENSE REPORT\n";
+    cout << "         VEHICLE REPORT\n";
     cout << "====================================\n";
 
     cout << "Fuel expenses:      "
@@ -32,30 +40,24 @@ void ReportManager::showFullReport(
     cout << "Repair expenses:    "
          << repairCost << endl;
 
-    cout << "------------------------------------\n";
-
     cout << "Total expenses:     "
          << total << endl;
-
-    cout << "\n";
-
-    vector<FuelRecord> fuels =
-        fuelManager.getRecords();
-
-    vector<RepairRecord> repairs =
-        repairManager.getRecords();
 
     double averageFuel = 0;
 
     if(!fuels.empty())
-    {
-        averageFuel =
-            fuelCost / fuels.size();
-    }
+        averageFuel = fuelCost / fuels.size();
 
-    cout << "Average fuel cost: "
-         << averageFuel
-         << endl;
+    cout << "\nAverage fuel expense: "
+         << averageFuel << endl;
+
+    double averageRepair = 0;
+
+    if(!repairs.empty())
+        averageRepair = repairCost / repairs.size();
+
+    cout << "Average repair expense: "
+         << averageRepair << endl;
 
     int maxMileage = 0;
 
@@ -71,19 +73,22 @@ void ReportManager::showFullReport(
             maxMileage = repair.mileage;
     }
 
-    cout << "Current mileage: "
+    cout << "\nCurrent mileage: "
          << maxMileage
          << " km\n";
 
     if(maxMileage > 0)
     {
-        cout
-            << "Cost per km: "
-            << total / maxMileage
-            << endl;
+        cout << "Cost per km: "
+             << total / maxMileage
+             << endl;
+
+        cout << "Cost per 100 km: "
+             << (total / maxMileage) * 100
+             << endl;
     }
 
-    cout << "\n";
+    cout << "\n===== REPAIR CATEGORIES =====\n";
 
     map<string,double> categories;
 
@@ -93,49 +98,96 @@ void ReportManager::showFullReport(
             += repair.cost;
     }
 
-    cout << "===== REPAIR CATEGORIES =====\n";
-
-    if(categories.empty())
+    for(const auto& item : categories)
     {
-        cout << "No repair records.\n";
-    }
-    else
-    {
-        for(const auto& item : categories)
-        {
-            cout
-                << item.first
-                << " : "
-                << item.second
-                << endl;
-        }
+        cout
+            << item.first
+            << " : "
+            << item.second
+            << endl;
     }
 
-    cout << "\n";
+    if(!fuels.empty())
+    {
+        FuelRecord expensiveFuel =
+            fuelManager.getMostExpensiveFuel();
+
+        FuelRecord cheapFuel =
+            fuelManager.getCheapestFuel();
+
+        cout << "\n===== FUEL ANALYSIS =====\n";
+
+        cout << "Most expensive fuel: "
+             << expensiveFuel.getTotalCost()
+             << endl;
+
+        cout << "Cheapest fuel: "
+             << cheapFuel.getTotalCost()
+             << endl;
+    }
 
     if(!repairs.empty())
     {
-        RepairRecord expensive =
+        RepairRecord repair =
             repairManager.getMostExpensiveRepair();
 
-        cout << "===== MOST EXPENSIVE REPAIR =====\n";
+        cout << "\n===== MOST EXPENSIVE REPAIR =====\n";
 
         cout << "Date: "
-             << expensive.date
-             << endl;
+             << repair.date << endl;
 
         cout << "Category: "
-             << expensive.category
-             << endl;
-
-        cout << "Mileage: "
-             << expensive.mileage
-             << " km\n";
+             << repair.category << endl;
 
         cout << "Cost: "
-             << expensive.cost
-             << endl;
+             << repair.cost << endl;
     }
 
     cout << "\n====================================\n";
 }
+
+void ReportManager::exportReportToFile(
+    const FuelManager& fuelManager,
+    const RepairManager& repairManager,
+    const string& filename
+)
+{
+    ofstream file(filename);
+
+    if(!file.is_open())
+    {
+        cout << "Cannot create report.\n";
+        return;
+    }
+
+    double fuelCost =
+        fuelManager.getTotalFuelCost();
+
+    double repairCost =
+        repairManager.getTotalRepairCost();
+
+    double total =
+        fuelCost + repairCost;
+
+    file << "CAR EXPENSE REPORT\n";
+    file << "===========================\n";
+
+    file << "Fuel expenses: "
+         << fuelCost
+         << endl;
+
+    file << "Repair expenses: "
+         << repairCost
+         << endl;
+
+    file << "Total expenses: "
+         << total
+         << endl;
+
+    file.close();
+
+    cout << "Report exported to "
+         << filename
+         << endl;
+}
+```
