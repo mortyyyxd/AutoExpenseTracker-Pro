@@ -1,4 +1,6 @@
+```cpp
 #include <iostream>
+#include <string>
 
 #include "../include/FuelManager.h"
 #include "../include/RepairManager.h"
@@ -18,17 +20,37 @@ int main()
 
     do
     {
-        cout << "\n";
-        cout << "=================================\n";
-        cout << "       CAR EXPENSE TRACKER\n";
-        cout << "=================================\n";
+        cout << "\n=====================================\n";
+        cout << "        CAR EXPENSE TRACKER\n";
+        cout << "=====================================\n";
 
-        cout << "1. Add fuel record\n";
-        cout << "2. Add repair record\n";
-        cout << "3. Show fuel records\n";
-        cout << "4. Show repair records\n";
-        cout << "5. Show expense report\n";
-        cout << "6. Save data\n";
+        cout << "1. Add fuel\n";
+        cout << "2. Add repair\n";
+
+        cout << "3. Show fuels\n";
+        cout << "4. Show repairs\n";
+
+        cout << "5. Edit fuel\n";
+        cout << "6. Delete fuel\n";
+
+        cout << "7. Edit repair\n";
+        cout << "8. Delete repair\n";
+
+        cout << "9. Show report\n";
+        cout << "10. Export report\n";
+
+        cout << "11. Sort fuels by mileage\n";
+        cout << "12. Sort fuels by cost\n";
+
+        cout << "13. Sort repairs by mileage\n";
+        cout << "14. Sort repairs by cost\n";
+
+        cout << "15. Search fuel by date\n";
+        cout << "16. Search repair by date\n";
+        cout << "17. Search repair by category\n";
+
+        cout << "18. Save data\n";
+
         cout << "0. Exit\n";
 
         cout << "\nChoice: ";
@@ -53,13 +75,91 @@ int main()
                 break;
 
             case 5:
+                fuelManager.editFuel();
+                break;
+
+            case 6:
+                fuelManager.deleteFuel();
+                break;
+
+            case 7:
+                repairManager.editRepair();
+                break;
+
+            case 8:
+                repairManager.deleteRepair();
+                break;
+
+            case 9:
                 ReportManager::showFullReport(
                     fuelManager,
                     repairManager
                 );
                 break;
 
-            case 6:
+            case 10:
+                ReportManager::exportReportToFile(
+                    fuelManager,
+                    repairManager,
+                    "report.txt"
+                );
+                break;
+
+            case 11:
+                fuelManager.sortByMileage();
+                break;
+
+            case 12:
+                fuelManager.sortByCost();
+                break;
+
+            case 13:
+                repairManager.sortByMileage();
+                break;
+
+            case 14:
+                repairManager.sortByCost();
+                break;
+
+            case 15:
+            {
+                string date;
+
+                cout << "Enter date: ";
+                cin >> date;
+
+                fuelManager.searchByDate(date);
+
+                break;
+            }
+
+            case 16:
+            {
+                string date;
+
+                cout << "Enter date: ";
+                cin >> date;
+
+                repairManager.searchByDate(date);
+
+                break;
+            }
+
+            case 17:
+            {
+                string category;
+
+                cout << "Enter category: ";
+                cin >> category;
+
+                repairManager.searchByCategory(
+                    category
+                );
+
+                break;
+            }
+
+            case 18:
 
                 fuelManager.saveToFile(
                     "data/fuel.txt"
@@ -89,7 +189,6 @@ int main()
                 break;
 
             default:
-
                 cout << "\nInvalid option.\n";
         }
 
@@ -97,3 +196,4 @@ int main()
 
     return 0;
 }
+```
