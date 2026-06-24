@@ -1,3 +1,4 @@
+```cpp
 #include "../include/FuelManager.h"
 
 #include <iostream>
@@ -123,3 +124,163 @@ vector<FuelRecord> FuelManager::getRecords() const
 {
     return fuels;
 }
+
+void FuelManager::deleteFuel()
+{
+    if (fuels.empty())
+    {
+        cout << "No records.\n";
+        return;
+    }
+
+    showFuels();
+
+    int index;
+
+    cout << "\nRecord number to delete: ";
+    cin >> index;
+
+    if (index < 1 || index > (int)fuels.size())
+    {
+        cout << "Invalid index.\n";
+        return;
+    }
+
+    fuels.erase(fuels.begin() + index - 1);
+
+    cout << "Deleted successfully.\n";
+}
+
+void FuelManager::editFuel()
+{
+    if (fuels.empty())
+    {
+        cout << "No records.\n";
+        return;
+    }
+
+    showFuels();
+
+    int index;
+
+    cout << "\nRecord number to edit: ";
+    cin >> index;
+
+    if (index < 1 || index > (int)fuels.size())
+    {
+        cout << "Invalid index.\n";
+        return;
+    }
+
+    FuelRecord& fuel = fuels[index - 1];
+
+    cout << "New date: ";
+    cin >> fuel.date;
+
+    cout << "New mileage: ";
+    cin >> fuel.mileage;
+
+    cout << "New liters: ";
+    cin >> fuel.liters;
+
+    cout << "New price: ";
+    cin >> fuel.pricePerLiter;
+
+    cout << "Updated successfully.\n";
+}
+
+void FuelManager::searchByDate(const string& date) const
+{
+    bool found = false;
+
+    for (const auto& fuel : fuels)
+    {
+        if (fuel.date == date)
+        {
+            found = true;
+
+            cout
+                << fuel.date
+                << " | "
+                << fuel.mileage
+                << " km | "
+                << fuel.getTotalCost()
+                << endl;
+        }
+    }
+
+    if (!found)
+    {
+        cout << "Nothing found.\n";
+    }
+}
+
+void FuelManager::sortByMileage()
+{
+    sort(
+        fuels.begin(),
+        fuels.end(),
+        [](const FuelRecord& a, const FuelRecord& b)
+        {
+            return a.mileage < b.mileage;
+        }
+    );
+
+    cout << "Sorted by mileage.\n";
+}
+
+void FuelManager::sortByCost()
+{
+    sort(
+        fuels.begin(),
+        fuels.end(),
+        [](const FuelRecord& a, const FuelRecord& b)
+        {
+            return a.getTotalCost() < b.getTotalCost();
+        }
+    );
+
+    cout << "Sorted by cost.\n";
+}
+
+FuelRecord FuelManager::getMostExpensiveFuel() const
+{
+    FuelRecord result{};
+
+    if (fuels.empty())
+        return result;
+
+    result = fuels[0];
+
+    for (const auto& fuel : fuels)
+    {
+        if (fuel.getTotalCost() > result.getTotalCost())
+        {
+            result = fuel;
+        }
+    }
+
+    return result;
+}
+
+FuelRecord FuelManager::getCheapestFuel() const
+{
+    FuelRecord result{};
+
+    if (fuels.empty())
+        return result;
+
+    result = fuels[0];
+
+    for (const auto& fuel : fuels)
+    {
+        if (fuel.getTotalCost() < result.getTotalCost())
+        {
+            result = fuel;
+        }
+    }
+
+    return result;
+}
+```
+
